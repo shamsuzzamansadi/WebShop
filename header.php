@@ -13,12 +13,12 @@
         </a>
         <ul>
           <li><a href="#">Home</a></li>
-          <li><a href="#">Warenkorb</a></li>
+          <li><a href="#">Basket</a></li>
         </ul>
         <div>
           <form action="include/incLogin.php" method="post">
-            <input type="text" name="mailuid" placeholder="Username/E-mail">
-            <input type="password" name="pwd" placeholder="password">
+            <input type="text" name="loginName" placeholder="Username/E-mail">
+            <input type="password" name="password" placeholder="password">
             <button type="submit" name="btnLogin">Login</button>
           </form>
           <a href="signup.php">Signup</a>

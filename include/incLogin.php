@@ -2,10 +2,10 @@
   if (isset($_POST['btnLogin']))
   {
     require 'incDbh.php';
-    
-    $mailuid = $_POST['mailuid'];
-    $password = $_POST['pwd'];
-    if(empty($mailuid) || empty($password))
+
+    $loginName = $_POST['loginName'];
+    $password = $_POST['password'];
+    if(empty($loginName) || empty($password))
     {
       header("Location: ../index.php?error=emptyFields");
       exit();
@@ -21,7 +21,7 @@
       }
       else
       {
-        $stmt->bind_param("ss", $mailuid, $password);
+        $stmt->bind_param("ss", $loginName, $password);
         $stmt->execute();
         $result = $stmt->get_result();
         if($row=$result->fetch_assoc())

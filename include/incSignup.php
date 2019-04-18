@@ -1,10 +1,10 @@
 <?php
   if (isset($_POST['btnSignup'])) {
     require 'incDbh.php';
-    $username = $_POST['uid'];
-    $email = $_POST['mail'];
-    $password = $_POST['pwd'];
-    $passwordRepeat = $_POST['pwd-repeat'];
+    $username = $_POST['signupName'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $passwordRepeat = $_POST['passwordRepeat'];
 
     if (empty($username) ||
     empty($email) ||

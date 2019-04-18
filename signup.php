@@ -5,10 +5,10 @@
 <main>
   <h1>Signup</h1>
   <form action="include/incSignup.php" method="post">
-    <input type="text" name="uid" placeholder="Username">
-    <input type="text" name="mail" placeholder="E-mail">
-    <input type="password" name="pwd" placeholder="Password">
-    <input type="password" name="pwd-repeat" placeholder="Repeat password">
+    <input type="text" name="signupName" placeholder="Username">
+    <input type="text" name="email" placeholder="E-mail">
+    <input type="password" name="password" placeholder="Password">
+    <input type="password" name="passwordRepeat" placeholder="Repeat password">
     <button type="submit" name="btnSignup">Signup</button>
   </form>
 </main>
