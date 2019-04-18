@@ -9,7 +9,8 @@
     if (empty($username) ||
     empty($email) ||
     empty($password) ||
-    empty($passwordRepeat)) {
+    empty($passwordRepeat))
+    {
       header("Location: ../signup.php?error=emptyfields&uid=".$username."&mail=".$email);
       exit();
     }
@@ -33,7 +34,8 @@
       header("Location: ../signup.php?error=passwordcheck&uid=".$username."&mail=".$email);
       exit();
     }
-    else {
+    else
+    {
       $sqlquery = "SELECT Name FROM users WHERE Name=?";
       $stmt = mysqli_stmt_init($connection);
 
@@ -69,13 +71,14 @@
           }
         }
       }
-
     }
+
     $stmt->close();
     $connection->close();
 
   }
-  else{
+  else
+  {
     header("Location: ../signup.php");
     exit();
   }
