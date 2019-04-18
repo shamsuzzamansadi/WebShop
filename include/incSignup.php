@@ -37,16 +37,16 @@
       $sqlquery = "SELECT Name FROM users WHERE Name=?";
       $stmt = mysqli_stmt_init($connection);
 
-      if(!mysqli_stmt_prepare($stmt, $sqlquery))
+      if(!$stmt->prepare($sqlquery))
       {
         header("Location: ../signup.php?error=sqlerror");
         exit();
       }
       else{
-        mysqli_stmt_bind_param($stmt, "s", $username);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_store_result($stmt);
-        $resultCheck = mysqli_stmt_num_rows($stmt);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->store_result();
+        $resultCheck = $stmt->num_rows();
         if($resultCheck>0)
         {
           header("Location: ../signup.php?usertaken&mail=".$email);
@@ -56,14 +56,14 @@
         {
           $sqlquery = "INSERT INTO users (Name, Email, Password) VALUES (?, ?, ?)";
           $stmt = mysqli_stmt_init($connection);
-          if(!mysqli_stmt_prepare($stmt, $sqlquery))
+          if(!$stmt->prepare($sqlquery))
           {
             header("Location: ../signup.php?error=sqlerror");
             exit();
           }else {
             $hashedPwd = password_hash($password, PASSWORD_DEFAULT);
-            mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashedPwd);
-            mysqli_stmt_execute($stmt);
+            $stmt->bind_param("sss", $username, $email, $hashedPwd);
+            $stmt->execute();
             header("Location: ../signup.php?signup=success");
             exit();
           }
@@ -71,8 +71,8 @@
       }
 
     }
-    mysqli_stmt_close($stmt);
-    mysqli_close($connection);
+    $stmt->close();
+    $connection->close();
 
   }
   else{

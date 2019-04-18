@@ -16,7 +16,7 @@
           <li><a href="#">Warenkorb</a></li>
         </ul>
         <div>
-          <form action="include/incLogin.php" methid="post">
+          <form action="include/incLogin.php" method="post">
             <input type="text" name="mailuid" placeholder="Username/E-mail">
             <input type="password" name="pwd" placeholder="password">
             <button type="submit" name="btnLogin">Login</button>
