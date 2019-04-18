@@ -12,7 +12,7 @@
     }
     else
     {
-      $sqlquery = "SELECT * FROM users WHERE Name=? OR Email=?";
+      $sqlquery = "SELECT * FROM tbl_users WHERE Name=? OR Email=?";
       $stmt = mysqli_stmt_init($connection);
       if(!$stmt->prepare($sqlquery))
       {
