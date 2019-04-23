@@ -36,7 +36,7 @@
     }
     else
     {
-      $sqlquery = "SELECT Name FROM users WHERE Name=?";
+      $sqlquery = "SELECT name FROM tbl_users WHERE name=?";
       $stmt = mysqli_stmt_init($connection);
 
       if(!$stmt->prepare($sqlquery))
@@ -56,7 +56,7 @@
         }
         else
         {
-          $sqlquery = "INSERT INTO users (Name, Email, Password) VALUES (?, ?, ?)";
+          $sqlquery = "INSERT INTO tbl_users (name, email, password) VALUES (?, ?, ?)";
           $stmt = mysqli_stmt_init($connection);
           if(!$stmt->prepare($sqlquery))
           {
