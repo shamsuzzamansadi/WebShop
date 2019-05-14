@@ -1,1 +1,7 @@
-You are logged out!
+<!-- You are logged out! -->
+<?php
+session_start();
+session_destroy();
+// Redirect to the login page:
+header('Location: ../index.php');
+?>
