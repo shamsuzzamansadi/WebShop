@@ -7,28 +7,28 @@
     <meta name=viewport content="width=device-width, initial-scale=1"
     <title></title>
     <link href="style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
   </head>
-  <body>
-    <header>
-      <nav>
-        <a href="#">
+  <header>
+      <body class="loggedin">
+        <nav class="navtop">
+          <div>
+            <h1>Website Title</h1>
+            <a href="profile.php"><i class="fas fa-user-circle"></i>Profile</a>
+            <a href="include/incLogout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
+          </div>
+        </nav>
+        </header>
+
+      <!-- <nav> -->
+        <!-- <a href="#">
         </a>
         <ul>
           <li><a href="index.php">Home</a></li>
           <li><a href="#">Basket</a></li>
-        </ul>
-        <div>
-          <form action="include/incLogin.php" method="post">
-            <input type="text" name="loginName" placeholder="Username/E-mail">
-            <input type="password" name="password" placeholder="password">
-            <button type="submit" name="btnLogin">Login</button>
-          </form>
-          <a href="signup.php">Signup</a>
-          <form action="include/incLogout.php" method="post">
-            <button type="submit" name="btnLogout">Logout</button>
-          </form>
-        </div>
-      </nav>
-    </header>
+        </ul> -->
+
+      <!-- </nav> -->
+
   </body>
 </html>
