@@ -1,7 +1,7 @@
 <?php
   require "header.php";
-  require "include/incAuthentication.php";
-  require "include/incLogin.php";
+  //require "include/incAuthentication.php";
+  //require "include/incLogin.php";
 ?>
 <html>
 <head>
@@ -14,7 +14,7 @@
 <body>
   <div class="login">
 			<h1>Login</h1>
-			<form action="include/incAuthenticate.php" method="post">
+			<form action="include/incAuthentication.php" method="post">
 				<label for="username">
 					<i class="fas fa-user"></i>
 				</label>

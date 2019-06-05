@@ -1,8 +1,8 @@
 <?php
   // session_start();
   $servername = "localhost"; // server/host name
-  $dbUsername = "root"; //username
-  $dbPassword = "";
+  $dbUsername = "user"; //username
+  $dbPassword = "1234";
   $dbName = "webshop";
 
   $connection = mysqli_connect($servername, $dbUsername, $dbPassword, $dbName);
