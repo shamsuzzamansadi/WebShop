@@ -1,39 +1,57 @@
 <?php
-    session_start();
+  if (isset($_POST['username']) && isset($_POST['password']))
+  {
     require 'incDbh.php';
-    // Now we check if the data from the login form was submitted, isset() will check if the data exists.
-    if ( !isset($_POST['username'], $_POST['password']) ) {
-	// Could not get the data that should have been sent.
-	  die ('Please fill both the username and password field!');
-    }
-    $con = mysqli_connect($servername, $dbUsername, $dbPassword, $dbName);
-    // Prepare our SQL, preparing the SQL statement will prevent SQL injection.
-    if ($stmt = $con->prepare('SELECT id, password FROM accounts WHERE username = ?')) {
-	    // Bind parameters (s = string, i = int, b = blob, etc), in our case the username is a string so we use "s"
-	    $stmt->bind_param('s', $_POST['username']);
-	    $stmt->execute();
-	    // Store the result so we can check if the account exists in the database.
-        $stmt->store_result();
-       
-        if ($stmt->num_rows > 0) {
-            $stmt->bind_result($id, $password);
-            $stmt->fetch();
-            // Account exists, now we verify the password.
-            // Note: remember to use password_hash in your registration file to store the hashed passwords.
-            if (password_verify($_POST['password'], $password)) {
-                // Verification success! User has loggedin!
-                // Create sessions so we know the user is logged in, they basically act like cookies but remember the data on the server.
-                session_regenerate_id();
-                $_SESSION['loggedin'] = TRUE;
-                $_SESSION['name'] = $_POST['username'];
-                $_SESSION['id'] = $id;
-                header('Location: ../home.php');
 
-            } else {
-                echo 'Incorrect password!';
-            }
-        } else {
-            echo 'Incorrect username!';
-        }
-        $stmt->close();
+    $loginName = $_POST['username'];
+    $password = $_POST['password'];
+    if(empty($loginName) || empty($password))
+    {
+      header("Location: ../index.php?error=emptyFields");
+      exit();
     }
+    else
+    {
+      $sqlquery = "SELECT * FROM tbl_users WHERE name=? OR email=?";
+      $stmt = mysqli_stmt_init($connection);
+      if(!$stmt->prepare($sqlquery))
+      {
+        header("Location: ../index.php?error=sqlerror");
+        exit();
+      }
+      else
+      {
+        $stmt->bind_param("ss", $loginName, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($row=$result->fetch_assoc())
+        {
+          $pwdCheck = password_verify($password, $row['password']);
+          if($pwdCheck == false)
+          {
+            header("Location: ../index.php?error=wrongpwd");
+            exit();
+          }
+          elseif($pwdCheck == true)
+          {
+            session_start();
+            $_SESSION['id'] = $row['id'];
+            $_SESSION['name'] = $row['name'];
+
+            header("Location: ../index.php");
+            exit();
+          }
+        }
+        else
+        {
+          header("Location: ../index.php?error=nouser");
+          exit();
+        }
+      }
+    }
+  }
+  else
+  {
+    header("Location: ../index.php");
+    exit();
+  }
