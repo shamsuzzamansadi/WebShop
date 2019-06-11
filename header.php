@@ -20,9 +20,11 @@
                 FH WebShop
               </a>
             </h1>
-            <a href="profile.php"><i class="fas fa-user-circle"></i>Profile</a>
             <?php
-              session_start();
+
+              if (session_status() == PHP_SESSION_NONE) {
+                  session_start();
+              }
               $count = 0;
               for ($i=1; $i < 4; $i++) { 
                   # code...
@@ -34,9 +36,10 @@
                 <a href="cart.php"><i class="fas fa-shopping-cart"></i>{$count}</a>
 HTML;
               echo $cart;
-              if (isset($_SESSION['loggedin'])) {
+              if (isset($_SESSION['name'])) {
                 $logout = <<<HTML
-            <a href="include/incLogout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
+                <a href="profile.php"><i class="fas fa-user-circle"></i>{$_SESSION['name']}</a>
+                <a href="include/incLogout.php"><i class="fas fa-sign-out-alt"></i>Log out</a>
 HTML;
                 echo $logout;
               }

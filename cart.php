@@ -29,7 +29,10 @@
                         ?>
                     </tbody>
                 </table>
-
+                <form method="post" action="checkout.php">
+                    <!-- <input type="text" hidden name="product_name" value="$product_name" /> -->
+                    <input type="submit" class="btn btn-primary" value="Check out"/>
+                </form>
             </div>
         </div>
     </div>
