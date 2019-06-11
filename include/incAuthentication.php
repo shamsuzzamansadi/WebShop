@@ -1,5 +1,5 @@
 <?php
-    session_start();
+    // session_start();
     require 'incDbh.php';
     // Now we check if the data from the login form was submitted, isset() will check if the data exists.
     if ( !isset($_POST['username'], $_POST['password']) ) {
@@ -27,7 +27,7 @@
                 $_SESSION['loggedin'] = TRUE;
                 $_SESSION['name'] = $_POST['username'];
                 $_SESSION['id'] = $id;
-                header('Location: ../home.php');
+                header('Location: ../webshop/index.php');
 
             } else {
                 echo 'Incorrect password!';
