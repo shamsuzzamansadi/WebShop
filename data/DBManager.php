@@ -4,8 +4,8 @@ namespace data;
 class DBManager
 {
     private $connection;
-    private static $username = "user";
-    private static $password = "1234";
+    private static $username = "root";
+    private static $password = "";
     private static $hostname = "";
     private static $database = "shopdb";
     public function prepareConnection()
