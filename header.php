@@ -9,7 +9,7 @@
     <title>WebShop</title>
     <link href="bootstrap.css" rel="stylesheet" type="text/css">
     <link href="style.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
   </head>
   <header>
       <body class="loggedin">
@@ -21,31 +21,32 @@
               </a>
             </h1>
             <?php
+              require_once "include/helper.php";
 
               if (session_status() == PHP_SESSION_NONE) {
                   session_start();
               }
-              $count = 0;
-              for ($i=1; $i < 4; $i++) { 
-                  # code...
-                  if (isset($_SESSION['cart_' . $i])) {
-                      $count += $_SESSION['cart_' . $i]; 
-                  }
+              $count = count_items();
+              $order = <<<HTML
+                  <a href="order.php"><i class="fa fa-history"></i>Orders</a>
+HTML;
+              if (isset($_SESSION['id'])) {
+                echo $order;
               }
               $cart = <<<HTML
-                <a href="cart.php"><i class="fas fa-shopping-cart"></i>{$count}</a>
+                <a href="cart.php"><i class="fa fa-shopping-cart"></i>{$count}</a>
 HTML;
               echo $cart;
               if (isset($_SESSION['name'])) {
                 $logout = <<<HTML
-                <a href="profile.php"><i class="fas fa-user-circle"></i>{$_SESSION['name']}</a>
-                <a href="include/incLogout.php"><i class="fas fa-sign-out-alt"></i>Log out</a>
+                <a href="profile.php"><i class="fa fa-user"></i>{$_SESSION['name']}</a>
+                <a href="include/incLogout.php"><i class="fa fa-sign-out"></i>Log out</a>
 HTML;
                 echo $logout;
               }
               else {
                 $login = <<<HTML
-                <a href="login.php"><i class="fas fa-sign-in-alt"></i>Login</a>
+                <a href="login.php"><i class="fa fa-sign-in"></i>Login</a>
 HTML;
                   echo $login;
               }
