@@ -14,16 +14,34 @@
             $result = $stmt->get_result();
             if($result->num_rows > 0) {
                 $i = 0;
+                $sum = 0;
                 while($row = $result->fetch_assoc()) {
-                    if (isset($_SESSION['cart_' . $row['id']])) {
+                    $cart_item = null;
+                    if (isset($_SESSION['id'])) {
+                        if (isset($_SESSION['cart_' . $row['id']])) {
+                            $cart_item = $_SESSION['cart_' . $row['id']];
+                        }
+                    }
+                    else if (isset($_COOKIE['cart_' . $row['id']])) {
+                        $cart_item = $_COOKIE['cart_' . $row['id']];
+                    }
+
+                    if (isset($cart_item)) {
                         $i++;
-                        $total_price = (int) $row['product_price'] * $_SESSION['cart_' . $row['id']];
+                        $total_price = (int) $row['product_price'] * $cart_item;
                         $product_name = $row['product_name'];
+                        $quantity = $cart_item;
+                        $sum += $total_price;
                         $cart = <<<HTML
                         <tr>
                             <th scope="row">$i</th>
                             <td>{$row['product_name']}</td>
-                            <td>{$_SESSION['cart_' . $row['id']]}</td>
+                            <td>
+                                <form method="post" action="cart.php?action=update&product={$row['id']}">
+                                    <input type="text" name="quantity" value="$quantity" size="2"/>
+                                    <input type="submit" class="btn btn-primary" value="update"/>
+                                </form>
+                            </td>
                             <td>{$row['product_price']}</td>
                             <td>{$total_price}</td>
                             <td>
@@ -38,12 +56,82 @@ HTML;
                     echo $cart;
                     }
                 }
+                $s_price = <<<HTML
+                    <strong>Sum: </strong>
+                    {$sum} $
+HTML;
+                echo $s_price;
             }
         }
     }
 
     require 'incDbh.php';
-    require 'helper.php';
+
+
+    function update_basket($product_id, $amount, $user_id) {
+        require 'incDbh.php';
+        $sqlquery = "UPDATE tbl_basket SET amount = ? WHERE product_id = ? AND user_id = ? AND order_id IS NULL";
+        $stmt = mysqli_stmt_init($connection);
+        if(!$stmt->prepare($sqlquery))
+        {
+          header("Location: ../error.php");
+          exit();
+        }else {
+          $stmt->bind_param("iii", $amount, $product_id, $user_id);
+          $stmt->execute();
+        //setcookie('cart_' . $i, '', time() - 3600, '/');
+        }
+    }
+
+    function add_basket($product_id, $amount, $user_id) {
+        require 'incDbh.php';
+        $sqlquery = "SELECT * FROM tbl_basket WHERE product_id = ? AND user_id = ? AND order_id IS NULL";
+        $stmt = mysqli_stmt_init($connection);
+        if(!$stmt->prepare($sqlquery))
+        {
+            header("Location: ../index.php?error=sqlerror");
+            exit();
+        }
+        else {
+            $stmt->bind_param("ii", $product_id, $user_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result->num_rows == 1) {
+                while($row = $result->fetch_assoc()) {
+                    $new_value = $amount + $row['amount'];
+                    update_basket($product_id, $new_value, $user_id);
+                  }            }
+            else {
+                $sqlquery = "INSERT INTO tbl_basket (product_id, amount, user_id) VALUES (?, ?, ?)";
+                $stmt = mysqli_stmt_init($connection);
+                if(!$stmt->prepare($sqlquery))
+                {
+                  header("Location: ../error.php");
+                  exit();
+                }else {
+                  $stmt->bind_param("iii", $product_id, $amount, $user_id);
+                  $stmt->execute();
+                //setcookie('cart_' . $i, '', time() - 3600, '/');
+                }
+            }
+        }
+    }
+
+    function delete_basket($product_id, $user_id) {
+        require 'incDbh.php';
+        $sqlquery = "DELETE FROM tbl_basket WHERE product_id = ? AND user_id = ? AND order_id IS NULL";
+        $stmt = mysqli_stmt_init($connection);
+        if(!$stmt->prepare($sqlquery))
+        {
+          header("Location: ../error.php");
+          exit();
+        }else {
+          $stmt->bind_param("ii", $product_id, $user_id);
+          $stmt->execute();
+        //setcookie('cart_' . $i, '', time() - 3600, '/');
+        }
+    }
+    // require 'helper.php';
     if (isset($_GET["action"])) {
         switch($_GET["action"]) {
             case "add":
@@ -75,10 +163,26 @@ HTML;
                                     if (session_status() == PHP_SESSION_NONE) {
                                         session_start();
                                     }
-                                    if(!isset($_SESSION['cart_' . $id])) {
-                                        $_SESSION['cart_' . $id] = 0;
+                                    //if loggin
+                                    if (isset($_SESSION['id'])) {
+                                        $new_value = $quantity;
+                                        if(isset($_SESSION['cart_' . $id])) {
+                                            // $_SESSION['cart_' . $id] = 0;
+                                            $new_value = $_SESSION['cart_' . $id] + $quantity;
+                                        }
+                                        add_basket($id, $quantity, (int) $_SESSION['id']);
+                                        $_SESSION['cart_' . $id] = $new_value;
                                     }
-                                    $_SESSION['cart_' . $id] += $quantity;
+                                    else {
+                                        if(isset($_COOKIE['cart_' . $id])) {
+                                            // $_SESSION['cart_' . $id] = 0;
+                                            $new_value = $_COOKIE['cart_' . $id] + $quantity;
+                                            setcookie("cart_" . $id, $new_value, time() + (86400 * 30), "/");
+                                        }
+                                        else {
+                                            setcookie("cart_" . $id, $quantity, time() + (86400 * 30), "/");
+                                        }
+                                    }
                                     header("Location: ../webshop/index.php?product={$id}");
                                     exit();
                                 }
@@ -95,12 +199,73 @@ HTML;
                     }
                 }
             break;
+            case "update":
+                if(isset($_GET["product"]) && isset($_POST["quantity"])) {
+                    $id = (int) $_GET["product"];
+                    $quantity = (int) $_POST['quantity'];
+                    if ($quantity <= 0) {
+                        if (session_status() == PHP_SESSION_NONE) {
+                            session_start();
+                        }
+                        set_message("Quantity must be positive value.");
+                        header("Location: ../webshop/cart.php");
+                        exit();
+                    }
+                    $sqlquery = "SELECT * FROM tbl_product WHERE id = ?";
+                    $stmt = mysqli_stmt_init($connection);
+                    if(!$stmt->prepare($sqlquery))
+                    {
+                        header("Location: ../index.php?error=sqlerror");
+                        exit();
+                    }
+                    else {
+                        $stmt->bind_param("i", $id);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        if($result->num_rows == 1) {
+                            while($row = $result->fetch_assoc()) {
+                                if ($row['product_stock'] >= $quantity) {
+                                    if (session_status() == PHP_SESSION_NONE) {
+                                        session_start();
+                                    }
+                                    if (isset($_SESSION['id'])) {
+                                        update_basket($id, $quantity, (int) $_SESSION['id']);
+                                        $_SESSION['cart_' . $id] = $quantity;
+                                    }
+                                    else {
+                                        setcookie("cart_" . $id, $quantity, time() + (86400 * 30), "/");
+                                    }
+                                    header("Location: ../webshop/cart.php");
+                                    exit();
+                                }
+                                else {
+                                    if (session_status() == PHP_SESSION_NONE) {
+                                        session_start();
+                                    }
+                                    set_message("We do not have enough " . $quantity . " " . $row['product_name']);
+                                    header("Location: ../webshop/cart.php");
+                                    exit();
+                                }
+                            }
+                        }
+                    }
+                }
+            break;
             case "remove":
                 if(isset($_GET["product"])) {
                     if (session_status() == PHP_SESSION_NONE) {
                         session_start();
                     }
-                    unset($_SESSION['cart_' . $_GET["product"]]);
+                    if (isset($_SESSION['id'])) {
+                        delete_basket($id, (int) $_SESSION['id']);
+                        $key = 'cart_' . $_GET["product"];
+                        unset($_SESSION[$key]);
+                    }
+                    else {
+                        $key = 'cart_' . $_GET["product"];
+                        unset($_COOKIE[$key]);
+                        setcookie($key, null, time() - 3600, '/');
+                    }
                     set_message("Removed product " . $_POST["product_name"] . " from cart.");
                     header("Location: ../webshop/cart.php");
                     exit();

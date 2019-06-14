@@ -11,7 +11,7 @@ function set_message($msg){
 function display_message() {
     if(isset($_SESSION['message'])) {
         $alert = <<<HTML
-        <div class="alert alert-danger" role="alert">
+        <div class="alert alert-primary" role="alert">
             {$_SESSION['message']}
         </div>
 HTML;
@@ -21,17 +21,21 @@ HTML;
 }
 
 function count_items() {
-    for ($i=1; $i < 4; $i++) { 
+    $count = 0;
+    for ($i=1; $i < 11; $i++) { 
         # code...
-        $count = 0;
-        if (isset($_SESSION['cart_' . $i])) {
-            $count += $_SESSION['cart_' . $i]; 
+        if (isset($_SESSION['id'])) {
+            if (isset($_SESSION['cart_' . $i])) {
+                $count += $_SESSION['cart_' . $i]; 
+            }
         }
+        else {
+            if (isset($_COOKIE['cart_' . $i])) {
+                $count += $_COOKIE['cart_' . $i]; 
+            }
+        }
+
     }
-    $cart = <<<HTML
-        <a href="cart.php"><i class="fas fa-shopping-cart"></i>{$count}</a>
-HTML;
-    echo $cart;
-    exit();
+    return $count;
 }
 ?>

@@ -31,12 +31,13 @@ HTML;
                 echo $product;
             }
         }
+        $stmt->close();
     }
 }
 
 function get_product_detail() {
     require 'incDbh.php';
-    require 'helper.php';
+    // require 'helper.php';
     $returnurl = $_SERVER['REQUEST_URI'];
     display_message();
     if(!isset($_GET['product'])) {
@@ -53,7 +54,7 @@ HTML;
     $stmt = mysqli_stmt_init($connection);
     if(!$stmt->prepare($sqlquery))
     {
-        header("Location: ../index.php?error=sqlerror");
+        header("Location: ../error.php?error=sqlerror");
         exit();
     }
     else {
@@ -79,6 +80,8 @@ HTML;
                 echo $product;
             }
         }
+        $stmt->close();
+
     }
 }
 ?>
