@@ -1,6 +1,42 @@
 <?php
 
     //session_start();
+    function simpleCrypt( $string, $action = 'e' ) {
+        // you may change these values to your own
+        $secret_key = 'my_simple_secret_key';
+        $secret_iv = 'my_simple_secret_iv';
+     
+        $output = false;
+        $encrypt_method = "AES-256-CBC";
+        $key = hash( 'sha256', $secret_key );
+        $iv = substr( hash( 'sha256', $secret_iv ), 0, 16 );
+     
+        if( $action == 'e' ) {
+            $output = base64_encode( openssl_encrypt( $string, $encrypt_method, $key, 0, $iv ) );
+        }
+        else if( $action == 'd' ){
+            $output = openssl_decrypt( base64_decode( $string ), $encrypt_method, $key, 0, $iv );
+        }
+     
+        return $output;
+    }
+    
+    //echo time();
+   function encrypt(){
+        date_default_timezone_set('GMT');
+        $now = date('m/d/Y h:i:s a', time());
+    
+        $oneMoreHourFromNow = date('Y-m-d H:i',strtotime('+2 hour +5 seconds',strtotime($now)));
+        $token = strtotime($oneMoreHourFromNow);
+    //echo $timeFormat;
+    
+        return simpleCrypt($token, 'e');
+   }
+
+   function decrypt($token){
+    return simpleCrypt($token, 'd');
+   }
+
 function get_products() {
     require_once 'incDbh.php';
     $sqlquery = "SELECT * FROM tbl_product";
@@ -22,7 +58,7 @@ function get_products() {
                     $active = '';
                 }
                 $product = <<<HTML
-                    <a href="index.php?product={$row['id']}" class="list-group-item list-group-item-action {$active} d-flex justify-content-between align-items-center">
+                        <a href="index.php?product={$row['id']}" class="list-group-item list-group-item-action {$active} d-flex justify-content-between align-items-center">
                         {$row['product_name']}
                         <span class="badge badge-primary badge-pill">{$row['product_stock']}</span>
                     </a>
@@ -63,8 +99,11 @@ HTML;
         $result = $stmt->get_result();
         if($result->num_rows == 1) {
             while($row = $result->fetch_assoc()) {
+                $timeToken = encrypt();
                 $product = <<<HTML
                 <form method="post" action="cart.php?action=add&product={$row['id']}">
+                
+                <input type='hidden' value='$timeToken' name='csrftoken'/>
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{$row['product_name']}</h5>
