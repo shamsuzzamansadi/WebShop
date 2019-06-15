@@ -1,4 +1,40 @@
 <?php
+    function simpleCrypt( $string, $action = 'e' ) {
+        // you may change these values to your own
+        $secret_key = 'my_simple_secret_key';
+        $secret_iv = 'my_simple_secret_iv';
+     
+        $output = false;
+        $encrypt_method = "AES-256-CBC";
+        $key = hash( 'sha256', $secret_key );
+        $iv = substr( hash( 'sha256', $secret_iv ), 0, 16 );
+     
+        if( $action == 'e' ) {
+            $output = base64_encode( openssl_encrypt( $string, $encrypt_method, $key, 0, $iv ) );
+        }
+        else if( $action == 'd' ){
+            $output = openssl_decrypt( base64_decode( $string ), $encrypt_method, $key, 0, $iv );
+        }
+     
+        return $output;
+    }
+    
+    //echo time();
+   function encrypt(){
+        date_default_timezone_set('GMT');
+        $now = date('m/d/Y h:i:s a', time());
+    
+        $oneMoreHourFromNow = date('Y-m-d H:i',strtotime('+3 hour',strtotime($now)));
+        $token = strtotime($oneMoreHourFromNow);
+    //echo $timeFormat;
+    
+        return simpleCrypt($token, 'e');
+   }
+
+   function decrypt($token){
+    return simpleCrypt($token, 'd');
+   }
+
     function show_cart() {
         // session_start();
         require 'incDbh.php';
@@ -136,6 +172,22 @@ HTML;
         switch($_GET["action"]) {
             case "add":
                 if(isset($_GET["product"]) && isset($_POST["quantity"])) {
+                   
+                //    first we check isset
+                if(isset($_POST["csrftoken"])){
+                    $csrftoken= $_POST["csrftoken"];
+                    $decryptedToken = decrypt($csrftoken);
+                    if($decryptedToken < time()) {
+                        header("Location: error.php");
+                        exit();
+                    }
+                }
+                else{
+                    header("Location: error.php");
+                        exit();
+
+                }
+                //    echo $csrftoken; die();
                     $id = (int) $_GET["product"];
                     $quantity = (int) $_POST['quantity'];
                     if ($quantity <= 0) {
