@@ -18,8 +18,8 @@
                             <th scope="col">#</th>
                             <th scope="col">Product name</th>
                             <th scope="col">Quantity</th>
-                            <th scope="col">Price $</th>
-                            <th scope="col">Total price $</th>
+                            <th scope="col">Price €</th>
+                            <th scope="col">Total price €</th>
                             <th></th>
                             </tr>
                         </thead>

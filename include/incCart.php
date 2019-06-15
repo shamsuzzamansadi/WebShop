@@ -94,7 +94,7 @@ HTML;
                 }
                 $s_price = <<<HTML
                     <strong>Sum: </strong>
-                    {$sum} $
+                    {$sum} €
 HTML;
                 echo $s_price;
             }
