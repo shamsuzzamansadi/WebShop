@@ -107,7 +107,7 @@ HTML;
                     <div class="card-body">
                         <h5 class="card-title">{$row['product_name']}</h5>
                         <p class="card-text">{$row['product_desc']}</p>
-                        <span class="card-text">$ {$row['product_price']}</span>
+                        <span class="card-text">€ {$row['product_price']}</span>
                         <input type="text" hidden name="returnurl" value={$returnurl}/>
                         <input type="text" name="quantity" value="1" size="2"/>
                         <input type="submit" class="btn btn-primary" value="Add to cart"/>
