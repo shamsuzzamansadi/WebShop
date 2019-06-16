@@ -65,7 +65,7 @@
                         $i++;
                         $total_price = (int) $row['product_price'] * $cart_item;
                         $product_name = $row['product_name'];
-                        $quantity = $cart_item;
+                        $quantity = htmlspecialchars($cart_item, ENT_QUOTES, 'UTF-8'); // sanitization to avoid xss attack
                         $sum += $total_price;
                         $cart = <<<HTML
                         <tr>
