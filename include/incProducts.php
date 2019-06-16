@@ -21,18 +21,17 @@
         return $output;
     }
     
-    //echo time();
+    //encryption function
    function encrypt(){
         date_default_timezone_set('GMT');
         $now = date('m/d/Y h:i:s a', time());
     
         $oneMoreHourFromNow = date('Y-m-d H:i',strtotime('+2 hour +5 seconds',strtotime($now)));
-        $token = strtotime($oneMoreHourFromNow);
-    //echo $timeFormat;
+        $token = strtotime($oneMoreHourFromNow);  //token generated from normal time to the unix time
     
-        return simpleCrypt($token, 'e');
+        return simpleCrypt($token, 'e'); // token encrypted
    }
-
+   
    function decrypt($token){
     return simpleCrypt($token, 'd');
    }
