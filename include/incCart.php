@@ -19,16 +19,15 @@
         return $output;
     }
     
-    //echo time();
+    //encryption function
    function encrypt(){
         date_default_timezone_set('GMT');
         $now = date('m/d/Y h:i:s a', time());
     
         $oneMoreHourFromNow = date('Y-m-d H:i',strtotime('+3 hour',strtotime($now)));
-        $token = strtotime($oneMoreHourFromNow);
-    //echo $timeFormat;
+        $token = strtotime($oneMoreHourFromNow); // //token generated from normal time to the unix time
     
-        return simpleCrypt($token, 'e');
+        return simpleCrypt($token, 'e'); 
    }
 
    function decrypt($token){
@@ -66,7 +65,7 @@
                         $i++;
                         $total_price = (int) $row['product_price'] * $cart_item;
                         $product_name = $row['product_name'];
-                        $quantity = $cart_item;
+                        $quantity = htmlspecialchars($cart_item, ENT_QUOTES, 'UTF-8'); // sanitization to avoid xss attack
                         $sum += $total_price;
                         $cart = <<<HTML
                         <tr>
