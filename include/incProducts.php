@@ -1,6 +1,4 @@
 <?php
-
-    //session_start();
     function simpleCrypt( $string, $action = 'e' ) {
         // this is the encryption function
         $secretKey1 = 'my_simple_secret_key'; // this is the key
@@ -17,18 +15,14 @@
         else if( $action == 'd' ){
             $output = openssl_decrypt( base64_decode( $string ), $encrypt_method, $key, 0, $iv );
         }
-     
-        return $output;
+             return $output;
     }
-    
     //encryption function
    function encrypt(){
         date_default_timezone_set('GMT');
         $now = date('m/d/Y h:i:s a', time());
-    
         $oneMoreHourFromNow = date('Y-m-d H:i',strtotime('+2 hour +5 seconds',strtotime($now)));
         $token = strtotime($oneMoreHourFromNow);  //token generated from normal time to the unix time
-    
         return simpleCrypt($token, 'e'); // token encrypted
    }
    
