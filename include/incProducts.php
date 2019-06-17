@@ -2,14 +2,14 @@
 
     //session_start();
     function simpleCrypt( $string, $action = 'e' ) {
-        // you may change these values to your own
-        $secret_key = 'my_simple_secret_key';
-        $secret_iv = 'my_simple_secret_iv';
+        // this is the encryption function
+        $secretKey1 = 'my_simple_secret_key'; // this is the key
+        $secretIv1 = 'my_simple_secret_iv'; // this is the initial value which is kinda used as a salt
      
         $output = false;
         $encrypt_method = "AES-256-CBC";
-        $key = hash( 'sha256', $secret_key );
-        $iv = substr( hash( 'sha256', $secret_iv ), 0, 16 );
+        $key = hash( 'sha256', $secretKey1 ); // SHA II encryption method
+        $iv = substr( hash( 'sha256', $secretIv1 ), 0, 16 ); // encrypting the initial value
      
         if( $action == 'e' ) {
             $output = base64_encode( openssl_encrypt( $string, $encrypt_method, $key, 0, $iv ) );
