@@ -88,6 +88,7 @@
             session_start();
             $user_id = (int) $row['id'];
             $_SESSION['id'] = $user_id;
+            $_SESSION['login_time'] = time();
             $_SESSION['name'] = $row['name'];
             if (count($_COOKIE) > 0) {
               for ($i=1; $i < 4; $i++) { 

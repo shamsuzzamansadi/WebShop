@@ -26,6 +26,11 @@
               if (session_status() == PHP_SESSION_NONE) {
                   session_start();
               }
+              $hour = 3600;
+              if (isset($_SESSION['id']) && (time() - $_SESSION['login_time'] > 4*$hour)) {
+                session_destroy();
+                header("Location:../webshop/login.php");
+              }
               $count = count_items();
               $order = <<<HTML
                   <a href="order.php"><i class="fa fa-history"></i>Orders</a>
